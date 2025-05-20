@@ -10,7 +10,7 @@ dfa = {
         'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7',
         'q8', 'q9', 'q10', 'q11', 'q12', 'q13', 'q14',
         'q15', 'q16', 'q17', 'q18', 'q19', 'q20', 'q21','q22',
-        'q23', 'q24', 'q25', 'T1', 'T2', 'T3'
+        'q23', 'q24', 'q25'
     },
     'alphabet': {'0', '1'},
     'start_state': 'q0',
@@ -43,8 +43,7 @@ dfa = {
         ('q9', '1'): 'q15',  
         ('q15', '1'): 'q17',
         ('q15', '0'): 'q16', 
-        ('q16', '0'): 'q15', 
-        ('q16', '1'): 'q19',
+        ('q16', '0'): 'q15',    
         ('q14', '1'): 'q17', 
         ('q14', '0'): 'q18', 
         ('q17', '0'): 'q19',     
@@ -258,15 +257,53 @@ Number 1: (1\*01\*01\*)(11|00)(10|01)\*(1|0)(11|00)(1|0|11|00|101|111|000)(11|00
 input_string1 = st.text_input("Input string for Number 1:")
 placeholder1 = st.empty()
 placeholder1.graphviz_chart(draw_dfa(dfa), use_container_width=False)
-regexChecker1 = st.button("Check Regex for Number 1")
-if regexChecker1:
+
+regexChecker1, simulate_button1, showCFG1 = st.columns(3, vertical_alignment="bottom")
+
+
+checkerClicked1= regexChecker1.button("Check Regex for Number 1",use_container_width=True)
+
+simulateClicked1 = simulate_button1.button("Simulate DFA for Number 1",use_container_width=True)
+
+clickedCFG1 = showCFG1.button("Show CFG for Number 1",use_container_width=True)
+
+if "show_cfg" not in st.session_state:
+    st.session_state.show_cfg = False
+
+if clickedCFG1:
+    st.session_state.show_cfg = not st.session_state.show_cfg  
+
+
+if st.session_state.show_cfg:
+    st.info("CFG has the following structure:")
+    st.code('''
+(1*01*01*)(11+00)(10+01)(10+01)*(1+0)(11+00)(1+011+00+101+111+000)(11+00)*(10*10*1)(11+00)*
+
+S → ABCDEFGXYZ
+A → H0H0H
+H → 1H | Ω
+B → 11 | 00 
+C → 10 | 01 
+D → 10D|  01D | Ω 
+E → 1 | 0 
+F → 11 | 00 
+G → 1 | 011 | 00 | 101 | 111 | 000 
+X → 11X | 00X | Ω 
+Y → 1J1J1
+J → OJ | Ω 
+Z → 11Z | 00Z | Ω 
+    ''')
+
+
+
+if checkerClicked1:
     is_valid, message = regex_checker1(input_string1)
     if is_valid:
         st.success(message)
     else:
         st.error(message)
 
-if st.button("Simulate DFA for Number 1"):
+if simulateClicked1:
     path1 = simulate_dfa(dfa, input_string1)
     visited1 = set()
 
@@ -294,16 +331,53 @@ Number 2: (aa+bb)(aba+bab+bbb)(aa+bb)\*(ab\*ab\*a)(ab\*ab\*a)\*(bbb+aaa)(a+b)\*
 input_string2 = st.text_input("Input string for Number 2:")
 placeholder2 = st.empty()
 placeholder2.graphviz_chart(draw_dfa(dfa2), use_container_width=False)
-regexChecker2 = st.button("Check Regex for Number 2")
 
-if regexChecker2:
+regexChecker2, simulate_button2, showCFG2 = st.columns(3, vertical_alignment="bottom")
+
+
+checkerClicked2= regexChecker2.button("Check Regex for Number 2",use_container_width=True)
+
+simulateClicked2 = simulate_button2.button("Simulate DFA for Number 2",use_container_width=True)
+
+clickedCFG2 = showCFG2.button("Show CFG for Number 2",use_container_width=True)
+
+if "show_cfg" not in st.session_state:
+    st.session_state.show_cfg = False
+
+if clickedCFG2:
+    st.session_state.show_cfg = not st.session_state.show_cfg  
+
+
+if st.session_state.show_cfg:
+    st.info("CFG has the following structure:")
+    st.code('''
+(aa+bb)(aba+bab+bbb)(a+b)*(aa+bb)(aa+bb)*(ab*ab*a)(ab*ab*a)*(bbb+aaa)(a+b)*
+
+S → ABCDEFGXYZ
+A  → a a | b b
+B  → a b a | b a b | b b b
+C  → aC | bC | Ω  
+D  → a a | b b
+E  → a a E | b b E | Ω
+F →  aGaGa
+G →  bG | Ω
+X → aHH | aHH | a | Ω
+H → bHH |  Ω
+Y → bbb | aaa
+Z  → aZ | bZ | Ω
+    ''')
+
+
+
+
+if checkerClicked2:
     is_valid, message = regex_checker2(input_string2)
     if is_valid:
         st.success(message)
     else:
         st.error(message)
 
-if st.button("Simulate DFA for Number 2"):
+if simulateClicked2:
     path2 = simulate_dfa(dfa2, input_string2)
     visited2 = set()
 
