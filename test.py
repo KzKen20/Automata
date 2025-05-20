@@ -275,9 +275,8 @@ if clickedCFG1:
 
 
 if st.session_state.show_cfg:
-    st.info("CFG has the following structure:")
+    st.info("CFG for: (1*01*01*)(11+00)(10+01)(10+01)*(1+0)(11+00)(1+011+00+101+111+000)(11+00)*(10*10*1)(11+00)*")
     st.code('''
-(1*01*01*)(11+00)(10+01)(10+01)*(1+0)(11+00)(1+011+00+101+111+000)(11+00)*(10*10*1)(11+00)*
 
 S → ABCDEFGXYZ
 A → H0H0H
@@ -349,9 +348,8 @@ if clickedCFG2:
 
 
 if st.session_state.show_cfg2:
-    st.info("CFG has the following structure:")
+    st.info("CFG for: (aa+bb)(aba+bab+bbb)(a+b)*(aa+bb)(aa+bb)*(ab*ab*a)(ab*ab*a)*(bbb+aaa)(a+b)*")
     st.code('''
-(aa+bb)(aba+bab+bbb)(a+b)*(aa+bb)(aa+bb)*(ab*ab*a)(ab*ab*a)*(bbb+aaa)(a+b)*
 
 S → ABCDEFGXYZ
 A  → a a | b b
