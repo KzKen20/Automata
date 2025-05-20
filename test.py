@@ -175,7 +175,7 @@ def draw_dfa(dfa, current_state=None, visited=None):
         visited = set()
     dot = Digraph(strict=True)
 
-    desired_height_px = 8000
+    desired_height_px = 3000
     aspect_ratio = 20 / 27
     desired_width_px = desired_height_px * aspect_ratio
     width_in_inches = desired_width_px / 96
@@ -318,8 +318,7 @@ if clickedCFG1:
     st.session_state.show_cfg = not st.session_state.show_cfg  
 
 
-if st.session_state.show_cfg: 
-    st.info("CFG has the following structure:")
+if st.session_state.show_cfg:
     st.info("CFG for Number 1:")
     st.code('''
 
@@ -386,8 +385,6 @@ simulateClicked2 = simulate_button2.button("Simulate DFA for Number 2",use_conta
 
 clickedCFG2 = showCFG2.button("Show CFG for Number 2",use_container_width=True)
 
-
-
 clickedPDA2 = showPDA2.button("Show PDA for Number 2",use_container_width=True)
 
 imagePDA1 = "PDA_2.png"
@@ -412,7 +409,6 @@ if st.session_state.show_pda2:
     </div>
     """, unsafe_allow_html=True)
 
-
 if "show_cfg2" not in st.session_state:
     st.session_state.show_cfg2 = False
 
@@ -421,10 +417,7 @@ if clickedCFG2:
 
 
 if st.session_state.show_cfg2:
-    st.info("CFG has the following structure:")
-
     st.info("CFG for Number 2:")
-
     st.code('''
 
 S → ABCDEFGXYZ
