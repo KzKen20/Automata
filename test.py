@@ -341,14 +341,14 @@ simulateClicked2 = simulate_button2.button("Simulate DFA for Number 2",use_conta
 
 clickedCFG2 = showCFG2.button("Show CFG for Number 2",use_container_width=True)
 
-if "show_cfg" not in st.session_state:
-    st.session_state.show_cfg = False
+if "show_cfg2" not in st.session_state:
+    st.session_state.show_cfg2 = False
 
 if clickedCFG2:
-    st.session_state.show_cfg = not st.session_state.show_cfg  
+    st.session_state.show_cfg2 = not st.session_state.show_cfg2  
 
 
-if st.session_state.show_cfg:
+if st.session_state.show_cfg2:
     st.info("CFG has the following structure:")
     st.code('''
 (aa+bb)(aba+bab+bbb)(a+b)*(aa+bb)(aa+bb)*(ab*ab*a)(ab*ab*a)*(bbb+aaa)(a+b)*
