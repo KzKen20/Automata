@@ -3,6 +3,7 @@ import time
 from graphviz import Digraph
 from collections import defaultdict
 import re
+import base64
 
 # --- Define DFA ---
 dfa = {
@@ -174,7 +175,7 @@ def draw_dfa(dfa, current_state=None, visited=None):
         visited = set()
     dot = Digraph(strict=True)
 
-    desired_height_px = 3000
+    desired_height_px = 8000
     aspect_ratio = 20 / 27
     desired_width_px = desired_height_px * aspect_ratio
     width_in_inches = desired_width_px / 96
@@ -244,8 +245,27 @@ def regex_checker2(input_string):
         return False, "❌ Input string does not match the regex."
 
 # --- Streamlit UI ---
-st.title("DFA String Simulator")
+st.markdown("""
+    <style>
+            
+         html, body, [class*="css"]  {
+        font-size: 25px !important;
+    }   
+        .main {
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+        .block-container {
+            padding-top: 32px;
+            padding-bottom: 32px;
+            max-width: 1440px;
+        }
+            
+        
+    </style>
+""", unsafe_allow_html=True)
 
+st.title("DFA String Simulator")
 
 
 # DFA description
@@ -258,7 +278,7 @@ input_string1 = st.text_input("Input string for Number 1:")
 placeholder1 = st.empty()
 placeholder1.graphviz_chart(draw_dfa(dfa), use_container_width=False)
 
-regexChecker1, simulate_button1, showCFG1 = st.columns(3, vertical_alignment="bottom")
+regexChecker1, simulate_button1, showCFG1, showPDA1 = st.columns(4, vertical_alignment="bottom")
 
 
 checkerClicked1= regexChecker1.button("Check Regex for Number 1",use_container_width=True)
@@ -267,6 +287,30 @@ simulateClicked1 = simulate_button1.button("Simulate DFA for Number 1",use_conta
 
 clickedCFG1 = showCFG1.button("Show CFG for Number 1",use_container_width=True)
 
+clickedPDA1 = showPDA1.button("Show PDA for Number 1",use_container_width=True)
+
+imagePDA1 = "PDA_1.png"
+
+
+
+if "show_pda" not in st.session_state:
+    st.session_state.show_pda = False
+
+if clickedPDA1:
+    st.session_state.show_pda = not st.session_state.show_pda  
+
+if st.session_state.show_pda:
+    # Read and encode image
+    with open(imagePDA1, "rb") as img_file:
+        img_base64 = base64.b64encode(img_file.read()).decode()
+
+    st.markdown(f"""
+    <div style="height:500px; width:100%; overflow:auto; border:1px solid #ccc; padding: 5px">
+        <img src="data:image/png;base64,{img_base64}" style="width:100%" />
+        <p style="text-align:center; margin-top:5px;">PDA for Number 1</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 if "show_cfg" not in st.session_state:
     st.session_state.show_cfg = False
 
@@ -274,11 +318,10 @@ if clickedCFG1:
     st.session_state.show_cfg = not st.session_state.show_cfg  
 
 
-if st.session_state.show_cfg:
-    
+if st.session_state.show_cfg: 
     st.info("CFG has the following structure:")
+    st.info("CFG for Number 1:")
     st.code('''
-(1*01*01*)(11+00)(10+01)(10+01)*(1+0)(11+00)(1+011+00+101+111+000)(11+00)*(10*10*1)(11+00)*
 
 S → ABCDEFGXYZ
 A → H0H0H
@@ -333,7 +376,8 @@ input_string2 = st.text_input("Input string for Number 2:")
 placeholder2 = st.empty()
 placeholder2.graphviz_chart(draw_dfa(dfa2), use_container_width=False)
 
-regexChecker2, simulate_button2, showCFG2 = st.columns(3, vertical_alignment="bottom")
+
+regexChecker2, simulate_button2, showCFG2, showPDA2 = st.columns(4, vertical_alignment="bottom")
 
 
 checkerClicked2= regexChecker2.button("Check Regex for Number 2",use_container_width=True)
@@ -341,6 +385,33 @@ checkerClicked2= regexChecker2.button("Check Regex for Number 2",use_container_w
 simulateClicked2 = simulate_button2.button("Simulate DFA for Number 2",use_container_width=True)
 
 clickedCFG2 = showCFG2.button("Show CFG for Number 2",use_container_width=True)
+
+
+
+clickedPDA2 = showPDA2.button("Show PDA for Number 2",use_container_width=True)
+
+imagePDA1 = "PDA_2.png"
+
+
+
+if "show_pda2" not in st.session_state:
+    st.session_state.show_pda2 = False
+
+if clickedPDA2:
+    st.session_state.show_pda2 = not st.session_state.show_pda2  
+
+if st.session_state.show_pda2:
+    # Read and encode image
+    with open(imagePDA1, "rb") as img_file:
+        img_base64 = base64.b64encode(img_file.read()).decode()
+
+    st.markdown(f"""
+    <div style="height:500px; width:100%; overflow:auto; border:1px solid #ccc; padding: 5px">
+        <img src="data:image/png;base64,{img_base64}" style="width:100%" />
+        <p style="text-align:center; margin-top:5px;">PDA for Number 2</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 if "show_cfg2" not in st.session_state:
     st.session_state.show_cfg2 = False
@@ -351,8 +422,10 @@ if clickedCFG2:
 
 if st.session_state.show_cfg2:
     st.info("CFG has the following structure:")
+
+    st.info("CFG for Number 2:")
+
     st.code('''
-(aa+bb)(aba+bab+bbb)(a+b)*(aa+bb)(aa+bb)*(ab*ab*a)(ab*ab*a)*(bbb+aaa)(a+b)*
 
 S → ABCDEFGXYZ
 A  → a a | b b
