@@ -103,11 +103,11 @@ dfa2 = {
         ('q7', 'b'): 'q8',
         ('q8', 'a'): 'q9',
         ('q8', 'b'): 'q10',
-        ('q9', 'b'): 'q10',
-        ('q10', 'a'): 'q9',
+        ('q9', 'b'): 'q9',
+        
         ('q9', 'a'): 'q11',
         ('q10', 'b'): 'q11',
-        ('q11', 'b'): 'q10',
+        ('q11', 'b'): 'q11',
         ('q11', 'a'): 'q12',
         ('q12', 'a'): 'q13',
         ('q13', 'b'): 'q14',
@@ -153,7 +153,6 @@ state_labels = {
     'q0': '-',
     # Add more if needed
 }
-
 
 
 # --- Simulate DFA ---
@@ -247,53 +246,244 @@ def regex_checker2(input_string):
         return False, "❌ Input string does not match the regex."
 
 # --- Streamlit UI ---
+
+# --- Streamlit UI with completely redesigned interface ---
+st.set_page_config(layout="wide", page_title="DFA String Simulator")
+
 st.markdown("""
     <style>
+        /* Reset and base styling */
+        html, body, [class*="css"] {
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+       
             
-         html, body, [class*="css"]  {
-        font-size: 25px !important;
-    }   
-        .main {
-            padding-left: 32px;
-            padding-right: 32px;
-        }
+       
+            
+         html, body, .stApp {
+         background: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+            background-attachment: fixed;
+            padding: 20% !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+}
+        
+        /* Remove default Streamlit container padding */
         .block-container {
-            padding-top: 32px;
-            padding-bottom: 32px;
-            max-width: 1440px;
+            padding: 1rem 1rem 10rem 1rem !important;
+            max-width: 1200px !important;
+            margin: 0 auto;
         }
+        
+        /* Hide Streamlit branding */
+        #MainMenu, footer, header {
+            visibility: hidden;
+        }
+        
+        /* App title and header */
+        .app-header {
+            background: #4662D7;
+            padding: 220px 220px;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .app-title {
+            color: white;
+            font-size: 36px;
+            font-weight: 600;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        /* Navigation */
+        .nav-container {
+            background: rgba(70, 98, 215, 0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-weight: 500;
+        }
+        
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        
+        
+
+            
             
         
+        /* Input styling */
+        .stTextInput > div > div > input {
+            border-radius: 5px;
+            border: 1px solid #E0E0E0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        
+        /* Textarea styling */
+        textarea {
+            border-radius: 5px !important;
+            border: 1px solid #E0E0E0 !important;
+            min-height: 120px !important;
+        }
+        
+        /* Button styling */
+        .primary-button {
+            background: #0D6EFD;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            margin: 5px;
+            min-width: 150px;
+        }
+        
+        .secondary-button {
+            background: #6C757D;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            margin: 5px;
+            min-width: 120px;
+        }
+        
+        /* Alert box styling */
+        .info-box {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        /* Regex display */
+        .regex-display {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #4662D7;
+        }
+        
+        /* Graphviz chart container */
+        .graph-container {
+            background: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow: auto;
+            max-height: 500px;
+            border: 1px solid #E0E0E0;
+        }
+        
+        /* Results section */
+        .results-section {
+            margin-top: 20px;
+        }
+        
+        /* Success/Error messages */
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        /* Button container */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        /* Center content */
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* Hide default Streamlit spinner */
+        .stSpinner {
+            display: none !important;
+        }
+            
+            
     </style>
 """, unsafe_allow_html=True)
 
-st.title("DFA String Simulator")
 
 
-# DFA description
-st.markdown(r"""
-Number 1: (1\*01\*01\*)(11|00)(10|01)\*(1|0)(11|00)(1|0|11|00|101|111|000)(11|00)\*(10\*10\*1)(11|00)\*
-""")
+# Custom navigation and header
+st.markdown("""
+<div class="nav-container">
+    <span class="nav-link active">Automata Theory</span>
+    <span class="nav-link">Home</span>
+    <span class="nav-link">DFA #1</span>
+    <span class="nav-link">DFA #2</span>
+</div>
+<h1 class="app-title">DFA String Simulator</h1>
+""", unsafe_allow_html=True)
 
-# --- First DFA simulation ---
-input_string1 = st.text_input("Input string for Number 1:")
+# DFA #1 section
+
+st.markdown('<div class="section-header">DFA #1</div>', unsafe_allow_html=True)
+st.markdown('<div class="regex-display" style="color: black;">Number 1: (1*01*01*)(11|00)(10|01)*(1|0)(11|00)(1|0|11|00|101|111|000)(11|00)*(10*10*1)(11|00)*</div>', unsafe_allow_html=True)
+
+# Input area
+input_string1 = st.text_area("Enter string for DFA #1 analysis:", placeholder="Type or paste a string here to test against DFA #1...", height=100)
+
+# Button container
+
+col1, col2, col3, col4 = st.columns([1,1,1,1])
+checkerClicked1 = col1.button("Check Regex", key="check_regex1", use_container_width=True)
+simulateClicked1 = col2.button("Simulate DFA", key="simulate_dfa1", use_container_width=True)
+clickedCFG1 = col3.button("Show CFG", key="show_cfg1", use_container_width=True)
+clickedPDA1 = col4.button("Show PDA", key="show_pda1", use_container_width=True)
+
+
+# Graph display container
+
 placeholder1 = st.empty()
-placeholder1.graphviz_chart(draw_dfa(dfa), use_container_width=False)
+placeholder1.graphviz_chart(draw_dfa(dfa), use_container_width=True)
 
-regexChecker1, simulate_button1, showCFG1, showPDA1 = st.columns(4, vertical_alignment="bottom")
-
-
-checkerClicked1= regexChecker1.button("Check Regex for Number 1",use_container_width=True)
-
-simulateClicked1 = simulate_button1.button("Simulate DFA for Number 1",use_container_width=True)
-
-clickedCFG1 = showCFG1.button("Show CFG for Number 1",use_container_width=True)
-
-clickedPDA1 = showPDA1.button("Show PDA for Number 1",use_container_width=True)
-
+# PDA and CFG sections
 imagePDA1 = "PDA_1.png"
-
-
 
 if "show_pda" not in st.session_state:
     st.session_state.show_pda = False
@@ -307,9 +497,9 @@ if st.session_state.show_pda:
         img_base64 = base64.b64encode(img_file.read()).decode()
 
     st.markdown(f"""
-    <div style="height:500px; width:100%; overflow:auto; border:1px solid #ccc; padding: 5px">
+    <div class="graph-container">
         <img src="data:image/png;base64,{img_base64}" style="width:100%" />
-        <p style="text-align:center; margin-top:5px;">PDA for Number 1</p>
+        <p style="text-align:center; margin-top:10px; font-weight:500;">PDA for Number 1</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -319,11 +509,10 @@ if "show_cfg" not in st.session_state:
 if clickedCFG1:
     st.session_state.show_cfg = not st.session_state.show_cfg  
 
-
 if st.session_state.show_cfg:
-    st.info("CFG for Number 1:")
+    st.markdown('<div class="info-box">', unsafe_allow_html=True)
+    st.markdown('<strong>CFG for Number 1:</strong>', unsafe_allow_html=True)
     st.code('''
-
 S → ABCDEFGXYZ
 A → H0H0H
 H → 1H | Ω
@@ -338,15 +527,16 @@ Y → 1J1J1
 J → OJ | Ω 
 Z → 11Z | 00Z | Ω 
     ''')
+    st.markdown('</div>', unsafe_allow_html=True)
 
-
-
+# Results section
+st.markdown('<div class="results-section">', unsafe_allow_html=True)
 if checkerClicked1:
     is_valid, message = regex_checker1(input_string1)
     if is_valid:
-        st.success(message)
+        st.markdown(f'<div class="success-message">{message}</div>', unsafe_allow_html=True)
     else:
-        st.error(message)
+        st.markdown(f'<div class="error-message">{message}</div>', unsafe_allow_html=True)
 
 if simulateClicked1:
     path1 = simulate_dfa(dfa, input_string1)
@@ -357,7 +547,7 @@ if simulateClicked1:
             break
         visited1.add(state)
         dot = draw_dfa(dfa, current_state=state, visited=visited1)
-        placeholder1.graphviz_chart(dot)
+        placeholder1.graphviz_chart(dot, use_container_width=True)
         time.sleep(0.8)
 
     final_state1 = path1[-1] if path1[-1] is not None else path1[-2]
@@ -365,63 +555,68 @@ if simulateClicked1:
     placeholder1.graphviz_chart(dot, use_container_width=True)
 
     if final_state1 in dfa['accept_states']:
-        st.success("✅ Input 1 accepted by the DFA.")
+        st.markdown('<div class="success-message">✅ Input accepted by DFA #1.</div>', unsafe_allow_html=True)
     else:
-        st.error("❌ Input 1 rejected by the DFA.")
+        st.markdown('<div class="error-message">❌ Input rejected by DFA #1.</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)  # Close results section
 
-# --- Second DFA simulation ---
-st.markdown(r"""
-Number 2: (aa+bb)(aba+bab+bbb)(aa+bb)\*(ab\*ab\*a)(ab\*ab\*a)\*(bbb+aaa)(a+b)\*
-""")
-input_string2 = st.text_input("Input string for Number 2:")
+st.markdown('</div>', unsafe_allow_html=True)  # Close DFA #1 section
+
+# DFA #2 section
+
+st.markdown('<div class="section-header">DFA #2</div>', unsafe_allow_html=True)
+st.markdown('<div class="regex-display" style="color: black;">Number 2: (aa+bb)(aba+bab+bbb)(aa+bb)*(ab*ab*a)(ab*ab*a)*(bbb+aaa)(a+b)*</div>', unsafe_allow_html=True)
+
+# Input area
+input_string2 = st.text_area("Enter string for DFA #2 analysis:", placeholder="Type or paste a string here to test against DFA #2...", height=100)
+
+# Button container
+
+col1, col2, col3, col4 = st.columns([1,1,1,1])
+checkerClicked2 = col1.button("Check Regex", key="check_regex2", use_container_width=True)
+simulateClicked2 = col2.button("Simulate DFA", key="simulate_dfa2", use_container_width=True)
+clickedCFG2 = col3.button("Show CFG", key="show_cfg2", use_container_width=True)
+clickedPDA2 = col4.button("Show PDA", key="show_pda2", use_container_width=True)
+
+
+# Graph display container
+
 placeholder2 = st.empty()
-placeholder2.graphviz_chart(draw_dfa(dfa2), use_container_width=False)
+placeholder2.graphviz_chart(draw_dfa(dfa2), use_container_width=True)
 
 
-regexChecker2, simulate_button2, showCFG2, showPDA2 = st.columns(4, vertical_alignment="bottom")
+# PDA and CFG sections
 
+imagePDA2 = "PDA_2.png"
 
-checkerClicked2= regexChecker2.button("Check Regex for Number 2",use_container_width=True)
-
-simulateClicked2 = simulate_button2.button("Simulate DFA for Number 2",use_container_width=True)
-
-clickedCFG2 = showCFG2.button("Show CFG for Number 2",use_container_width=True)
-
-clickedPDA2 = showPDA2.button("Show PDA for Number 2",use_container_width=True)
-
-imagePDA1 = "PDA_2.png"
-
-
-
-if "show_pda2" not in st.session_state:
-    st.session_state.show_pda2 = False
+if "show_pda" not in st.session_state:
+    st.session_state.show_pda = False
 
 if clickedPDA2:
-    st.session_state.show_pda2 = not st.session_state.show_pda2  
+    st.session_state.show_pda = not st.session_state.show_pda  
 
-if st.session_state.show_pda2:
+if st.session_state.show_pda:
     # Read and encode image
-    with open(imagePDA1, "rb") as img_file:
+    with open(imagePDA2, "rb") as img_file:
         img_base64 = base64.b64encode(img_file.read()).decode()
 
     st.markdown(f"""
-    <div style="height:500px; width:100%; overflow:auto; border:1px solid #ccc; padding: 5px">
+    <div class="graph-container">
         <img src="data:image/png;base64,{img_base64}" style="width:100%" />
-        <p style="text-align:center; margin-top:5px;">PDA for Number 2</p>
+        <p style="text-align:center; margin-top:10px; font-weight:500;">PDA for Number 2</p>
     </div>
     """, unsafe_allow_html=True)
 
-if "show_cfg2" not in st.session_state:
-    st.session_state.show_cfg2 = False
+if "show_cfg" not in st.session_state:
+    st.session_state.show_cfg = False
 
 if clickedCFG2:
-    st.session_state.show_cfg2 = not st.session_state.show_cfg2  
+    st.session_state.show_cfg = not st.session_state.show_cfg 
 
-
-if st.session_state.show_cfg2:
-    st.info("CFG for Number 2:")
+if st.session_state.show_cfg:
+    st.markdown('<div class="info-box">', unsafe_allow_html=True)
+    st.markdown('<strong>CFG for Number 2:</strong>', unsafe_allow_html=True)
     st.code('''
-
 S → ABCDEFGXYZ
 A  → a a | b b
 B  → a b a | b a b | b b b
@@ -435,16 +630,16 @@ H → bHH |  Ω
 Y → bbb | aaa
 Z  → aZ | bZ | Ω
     ''')
+    st.markdown('</div>', unsafe_allow_html=True)
 
-
-
-
+# Results section
+st.markdown('<div class="results-section">', unsafe_allow_html=True)
 if checkerClicked2:
     is_valid, message = regex_checker2(input_string2)
     if is_valid:
-        st.success(message)
+        st.markdown(f'<div class="success-message">{message}</div>', unsafe_allow_html=True)
     else:
-        st.error(message)
+        st.markdown(f'<div class="error-message">{message}</div>', unsafe_allow_html=True)
 
 if simulateClicked2:
     path2 = simulate_dfa(dfa2, input_string2)
@@ -455,7 +650,7 @@ if simulateClicked2:
             break
         visited2.add(state)
         dot = draw_dfa(dfa2, current_state=state, visited=visited2)
-        placeholder2.graphviz_chart(dot)
+        placeholder2.graphviz_chart(dot, use_container_width=True)
         time.sleep(0.8)
 
     final_state2 = path2[-1] if path2[-1] is not None else path2[-2]
@@ -463,6 +658,28 @@ if simulateClicked2:
     placeholder2.graphviz_chart(dot, use_container_width=True)
 
     if final_state2 in dfa2['accept_states']:
-        st.success("✅ Input 2 accepted by DFA.")
+        st.markdown('<div class="success-message">✅ Input accepted by DFA #2.</div>', unsafe_allow_html=True)
     else:
-        st.error("❌ Input 2 rejected by DFA.")
+        st.markdown('<div class="error-message">❌ Input rejected by DFA #2.</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)  # Close results section
+
+st.markdown('</div>', unsafe_allow_html=True)  # Close DFA #2 section
+
+# Example Strings Section
+st.markdown('<div class="content-section">', unsafe_allow_html=True)
+st.markdown('<div class="section-header">Example Strings</div>', unsafe_allow_html=True)
+st.markdown('<p>Click on any example to use it:</p>', unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown('<strong>Examples for DFA #1:</strong>', unsafe_allow_html=True)
+    example1_1 = st.button("Example 1: 10001011001001", key="example1_1")
+    example1_2 = st.button("Example 2: 11001010111011", key="example1_2")
+    
+with col2:
+    st.markdown('<strong>Examples for DFA #2:</strong>', unsafe_allow_html=True)
+    example2_1 = st.button("Example 1: aababaababaabbbaaaa", key="example2_1")
+    example2_2 = st.button("Example 2: bbbabaaaaababbaaa", key="example2_2")
+
+st.markdown('</div>', unsafe_allow_html=True)  # Close example section
