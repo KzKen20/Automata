@@ -248,6 +248,31 @@ def regex_checker2(input_string):
 
 # --- Streamlit UI ---
 
+# --- Helper function for multi-line input processing ---
+def process_multiline_inputs(input_text, regex_checker, dfa, placeholder, simulate=False):
+    results = []
+    input_lines = [line.strip() for line in input_text.split('\n') if line.strip()]
+    for idx, input_str in enumerate(input_lines, 1):
+        result = {'input': input_str}
+        is_valid, message = regex_checker(input_str)
+        result['regex'] = (is_valid, message)
+        if simulate:
+            path = simulate_dfa(dfa, input_str)
+            visited = set()
+            for state in path:
+                if state is None:
+                    break
+                visited.add(state)
+                dot = draw_dfa(dfa, current_state=state, visited=visited)
+                placeholder.graphviz_chart(dot, use_container_width=True)
+                time.sleep(0.8)
+            final_state = path[-1] if path[-1] is not None else path[-2]
+            dot = draw_dfa(dfa, current_state=final_state, visited=visited)
+            placeholder.graphviz_chart(dot, use_container_width=True)
+            result['dfa'] = (final_state in dfa['accept_states'])
+        results.append(result)
+    return results
+
 # --- Streamlit UI with completely redesigned interface ---
 st.set_page_config(layout="wide", page_title="DFA String Simulator")
 
@@ -533,32 +558,21 @@ Z → 11Z | 00Z | Ω
 # Results section
 st.markdown('<div class="results-section">', unsafe_allow_html=True)
 if checkerClicked1:
-    is_valid, message = regex_checker1(input_string1)
-    if is_valid:
-        st.markdown(f'<div class="success-message">{message}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="error-message">{message}</div>', unsafe_allow_html=True)
+    results = process_multiline_inputs(input_string1, regex_checker1, dfa, placeholder1, simulate=False)
+    for res in results:
+        if res['regex'][0]:
+            st.markdown(f'<div class="success-message">[Input: <b>{res["input"]}</b>] {res["regex"][1]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="error-message">[Input: <b>{res["input"]}</b>] {res["regex"][1]}</div>', unsafe_allow_html=True)
 
 if simulateClicked1:
-    path1 = simulate_dfa(dfa, input_string1)
-    visited1 = set()
-
-    for state in path1:
-        if state is None:
-            break
-        visited1.add(state)
-        dot = draw_dfa(dfa, current_state=state, visited=visited1)
-        placeholder1.graphviz_chart(dot, use_container_width=True)
-        time.sleep(0.8)
-
-    final_state1 = path1[-1] if path1[-1] is not None else path1[-2]
-    dot = draw_dfa(dfa, current_state=final_state1, visited=visited1)
-    placeholder1.graphviz_chart(dot, use_container_width=True)
-
-    if final_state1 in dfa['accept_states']:
-        st.markdown('<div class="success-message">✅ Input accepted by DFA #1.</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div class="error-message">❌ Input rejected by DFA #1.</div>', unsafe_allow_html=True)
+    results = process_multiline_inputs(input_string1, regex_checker1, dfa, placeholder1, simulate=True)
+    for res in results:
+        if 'dfa' in res:
+            if res['dfa']:
+                st.markdown(f'<div class="success-message">✅ Input <b>{res["input"]}</b> accepted by DFA #1.</div>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<div class="error-message">❌ Input <b>{res["input"]}</b> rejected by DFA #1.</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)  # Close results section
 
 st.markdown('</div>', unsafe_allow_html=True)  # Close DFA #1 section
@@ -636,32 +650,21 @@ Z  → aZ | bZ | Ω
 # Results section
 st.markdown('<div class="results-section">', unsafe_allow_html=True)
 if checkerClicked2:
-    is_valid, message = regex_checker2(input_string2)
-    if is_valid:
-        st.markdown(f'<div class="success-message">{message}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="error-message">{message}</div>', unsafe_allow_html=True)
+    results = process_multiline_inputs(input_string2, regex_checker2, dfa2, placeholder2, simulate=False)
+    for res in results:
+        if res['regex'][0]:
+            st.markdown(f'<div class="success-message">[Input: <b>{res["input"]}</b>] {res["regex"][1]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="error-message">[Input: <b>{res["input"]}</b>] {res["regex"][1]}</div>', unsafe_allow_html=True)
 
 if simulateClicked2:
-    path2 = simulate_dfa(dfa2, input_string2)
-    visited2 = set()
-
-    for state in path2:
-        if state is None:
-            break
-        visited2.add(state)
-        dot = draw_dfa(dfa2, current_state=state, visited=visited2)
-        placeholder2.graphviz_chart(dot, use_container_width=True)
-        time.sleep(0.8)
-
-    final_state2 = path2[-1] if path2[-1] is not None else path2[-2]
-    dot = draw_dfa(dfa2, current_state=final_state2, visited=visited2)
-    placeholder2.graphviz_chart(dot, use_container_width=True)
-
-    if final_state2 in dfa2['accept_states']:
-        st.markdown('<div class="success-message">✅ Input accepted by DFA #2.</div>', unsafe_allow_html=True)
-    else:
-        st.markdown('<div class="error-message">❌ Input rejected by DFA #2.</div>', unsafe_allow_html=True)
+    results = process_multiline_inputs(input_string2, regex_checker2, dfa2, placeholder2, simulate=True)
+    for res in results:
+        if 'dfa' in res:
+            if res['dfa']:
+                st.markdown(f'<div class="success-message">✅ Input <b>{res["input"]}</b> accepted by DFA #2.</div>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<div class="error-message">❌ Input <b>{res["input"]}</b> rejected by DFA #2.</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)  # Close results section
 
 st.markdown('</div>', unsafe_allow_html=True)  # Close DFA #2 section
