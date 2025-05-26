@@ -640,8 +640,8 @@ D  → a a | b b
 E  → a a E | b b E | Ω
 F →  aGaGa
 G →  bG | Ω
-X → aHH | aHH | a | Ω
-H → bHH |  Ω
+X → aH | aH | a | Ω
+H → bH |  Ω
 Y → bbb | aaa
 Z  → aZ | bZ | Ω
     ''')
